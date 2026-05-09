@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="אגרובוט">
+<meta name="theme-color" content="#1a1f2e">
+<title>אגרובוט</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://ozzvik.github.io/Agrobot/icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#13151f;
+  --surf:#1c1f2e;
+  --surf2:#22263a;
+  --brd:#2e3450;
+  --tx:#e8eaf6;
+  --txm:#7986cb;
+  --txd:#9fa8da;
+  --accent:#5c6bc0;
+  --accent2:#3949ab;
+  --accent-light:#7986cb;
+  --sage:#66bb6a;
+  --gold:#ffb74d;
+  --red:#ef5350;
+  --radius:16px;
+  --shadow:0 2px 16px rgba(0,0,0,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100dvh}
+
+/* ── HEADER ── */
+header{
+  background:var(--surf);
+  border-bottom:1px solid var(--brd);
+  padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;
+  box-shadow:var(--shadow);
+}
+.logo{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(92,107,192,.4);
+}
+.app-name{font-size:17px;font-weight:900;color:var(--tx)}
+.app-sub{font-size:10px;color:var(--txm);margin-top:1px}
+.hbtn{
+  background:transparent;border:none;
+  color:var(--txm);width:36px;height:36px;
+  border-radius:10px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .2s;
+}
+.hbtn:active{background:var(--surf2)}
+
+/* ── CHAT ── */
+#chat-wrap{
+  flex:1;overflow-y:auto;padding:16px 14px;
+  display:flex;flex-direction:column;gap:12px;
+  scroll-behavior:smooth;
+}
+#chat-wrap::-webkit-scrollbar{width:2px}
+#chat-wrap::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
+
+/* ── MESSAGES ── */
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:85%}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.msg.bot{align-self:flex-start}
+.msg-bubble{
+  padding:11px 15px;border-radius:var(--radius);
+  font-size:14px;line-height:1.7;position:relative;
+}
+.msg.user .msg-bubble{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;border-bottom-left-radius:4px;
+  box-shadow:0 2px 12px rgba(57,73,171,.3);
+}
+.msg.bot .msg-bubble{
+  background:var(--surf);border:1px solid var(--brd);
+  color:var(--tx);border-bottom-right-radius:4px;
+  box-shadow:var(--shadow);
+}
+.msg-time{font-size:9px;color:var(--txm);padding:0 4px;flex-shrink:0;align-self:flex-end;margin-bottom:2px}
+.bot-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),var(--accent-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+  box-shadow:0 2px 6px rgba(92,107,192,.3);
+}
+.msg-img{max-width:220px;border-radius:12px;margin-top:8px;display:block;cursor:zoom-in}
+
+/* ── TYPING ── */
+.typing{display:flex;gap:5px;align-items:center;padding:13px 15px}
+.typing span{width:7px;height:7px;background:var(--txm);border-radius:50%;animation:bounce .9s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-7px);opacity:1}}
+
+/* ── INPUT AREA ── */
+#input-area{
+  background:var(--surf);
+  border-top:1px solid var(--brd);
+  padding:10px 12px 14px;
+  flex-shrink:0;
+}
+.img-preview-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.img-thumb{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-thumb-del{position:absolute;top:2px;right:2px;width:16px;height:16px;background:rgba(0,0,0,.75);border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;border:none}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+#msg-inp{
+  flex:1;background:var(--surf2);
+  border:1px solid var(--brd);border-radius:14px;
+  padding:10px 14px;color:var(--tx);
+  font-size:14px;font-family:'Heebo',sans-serif;
+  resize:none;min-height:44px;max-height:120px;
+  outline:none;direction:rtl;line-height:1.5;
+  transition:border-color .2s;
+}
+#msg-inp:focus{border-color:var(--accent)}
+#msg-inp::placeholder{color:var(--txm)}
+.send-btn{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  border:none;color:#fff;
+  width:44px;height:44px;border-radius:14px;
+  cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 2px 10px rgba(57,73,171,.4);
+  transition:opacity .2s,transform .1s;
+}
+.send-btn:active{transform:scale(.95)}
+.send-btn:disabled{opacity:.3}
+.attach-btn{
+  background:var(--surf2);border:1px solid var(--brd);
+  color:var(--txm);width:44px;height:44px;
+  border-radius:14px;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ── QUICK CHIPS ── */
+.quick-chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;flex-shrink:0}
+.quick-chips::-webkit-scrollbar{display:none}
+.chip{
+  background:var(--surf2);border:1px solid var(--brd);
+  color:var(--txd);padding:6px 13px;border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;
+  white-space:nowrap;font-family:'Heebo',sans-serif;flex-shrink:0;
+  transition:all .15s;
+}
+.chip:active{background:var(--accent2);border-color:var(--accent);color:#fff}
+
+/* ── MEMORY PANEL ── */
+#mem-panel{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+#mem-panel.open{display:flex}
+.mem-sheet{background:var(--surf);border-radius:20px 20px 0 0;width:100%;max-height:75vh;overflow-y:auto;padding:16px}
+.mem-handle{width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 14px}
+.mem-item{background:var(--surf2);border:1px solid var(--brd);border-radius:12px;padding:11px 14px;margin-bottom:7px;font-size:12px;color:var(--txd);cursor:pointer;transition:border-color .15s}
+.mem-item:active{border-color:var(--accent)}
+.mem-item-date{font-size:10px;color:var(--txm);margin-bottom:3px}
+
+/* ── LOGIN ── */
+/* login removed */
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--surf2);border:1px solid var(--brd);
+  color:var(--tx);padding:10px 20px;border-radius:20px;
+  font-size:12px;font-weight:600;z-index:1000;
+  opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;
+  box-shadow:var(--shadow);
+}
+#toast.show{opacity:1}
+
+/* ── MARKDOWN / WHATSAPP STYLE ── */
+.msg-bubble b,.msg-bubble strong{color:var(--gold);font-weight:700}
+.msg-bubble em{font-style:italic;color:var(--txd)}
+.msg-bubble code{background:rgba(0,0,0,.3);border-radius:5px;padding:1px 6px;font-size:12px;font-family:monospace}
+.msg-heading{font-weight:900;font-size:14px;color:var(--accent-light);margin:6px 0 4px;padding-bottom:4px;border-bottom:1px solid var(--brd)}
+.msg-li{padding:3px 10px 3px 0;border-right:2px solid var(--accent);margin:2px 0;color:var(--tx)}
+.msg-li-num{padding:2px 0;color:var(--txd);margin:2px 0}
+.msg-gap{height:5px;display:block}
+.bot-avatar-spacer{width:30px;flex-shrink:0}
+.msg.bot+.msg.bot{margin-top:2px}
+
+
+/* ── WELCOME ── */
+.welcome-card{
+  background:var(--surf);border:1px solid var(--brd);
+  border-radius:var(--radius);padding:20px;text-align:center;
+  margin:8px 0;box-shadow:var(--shadow);
+}
+.welcome-card .wc-icon{font-size:40px;margin-bottom:10px}
+.welcome-card h2{font-size:16px;font-weight:900;color:var(--accent-light);margin-bottom:8px}
+.welcome-card p{font-size:12px;color:var(--txm);line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- NO LOGIN - straight to chat -->
+
+
+
+<!-- HEADER -->
+<header>
+  <div class="logo">🌿</div>
+  <div>
+    <div class="app-name">אגרובוט</div>
+    <div class="app-sub" id="user-label">יועץ גידול חכם</div>
+  </div>
+  <div style="flex:1"></div>
+  <button class="hbtn" onclick="openMem()" title="זיכרון">🧠</button>
+  <button class="hbtn" onclick="openBrain()" title="מאגר ידע">📚</button>
+  <button class="hbtn" onclick="openCalc()" title="מחשבון דישון">🧪</button>
+  <button class="hbtn" onclick="clearChat()" title="שיחה חדשה">✨</button>
+</header>
+
+<!-- CHAT -->
+<div id="chat-wrap"></div>
+
+<!-- INPUT -->
+<div id="input-area">
+  <div class="quick-chips" id="chips">
+    <span class="chip" onclick="sendChip(this)">💧 דישון</span>
+    <span class="chip" onclick="sendChip(this)">💡 תאורה</span>
+    <span class="chip" onclick="sendChip(this)">🌡️ סביבה</span>
+    <span class="chip" onclick="sendChip(this)">🦠 מחלות</span>
+    <span class="chip" onclick="sendChip(this)">✂️ גיזום</span>
+    <span class="chip" onclick="sendChip(this)">🌸 הפרחה</span>
+    <span class="chip" onclick="sendChip(this)">🌾 קציר</span>
+    <span class="chip" onclick="sendChip(this)">🫙 קיורינג</span>
+  </div>
+  <div id="img-preview" class="img-preview-wrap" style="display:none"></div>
+  <div class="input-row">
+    <button class="attach-btn" onclick="document.getElementById('file-inp').click()">📎</button>
+    <input type="file" id="file-inp" accept="image/*,text/*,.csv,.xlsx,.pdf" multiple style="display:none" onchange="handleFiles(this.files)">
+    <textarea id="msg-inp" placeholder="שאל שאלה על הגידול..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+      oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<!-- MEMORY PANEL -->
+<div id="mem-panel" onclick="if(event.target===this)closeMem()">
+  <div class="mem-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:15px;font-weight:900">🧠 זיכרון</div>
+      <button onclick="closeMem()" style="background:none;border:none;color:var(--txm);font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div id="mem-list"><div style="color:var(--txm);font-size:12px;text-align:center;padding:20px">טוען...</div></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const SB_URL='https://epbzibkuwrtjaugezqcd.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwYnppYmt1d3J0amF1Z2V6cWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3NzMwMzgsImV4cCI6MjA1OTM0OTAzOH0.pQORQpyDmFmRFGhFNhWW6T5MR55L6-YISmSAZvxIXMY';
+
+let _history=[];
+let _pendingImgs=[];
+
+function saveLocal(){
+  try{
+    // שמור טקסט בלבד (ללא תמונות) — ללא מגבלת כמות
+    const textOnly=_history.map(m=>({
+      role:m.role,
+      content:m.content,
+      time:m.time,
+      // תמונות לא נשמרות — חוסכות נפח
+    }));
+    localStorage.setItem('agro_hist',JSON.stringify(textOnly));
+  }catch(e){
+    // אם אין מקום — הסר ישן וסתור שוב
+    try{
+      const textOnly=_history.slice(-500).map(m=>({role:m.role,content:m.content,time:m.time}));
+      localStorage.setItem('agro_hist',JSON.stringify(textOnly));
+    }catch(e2){console.warn('Storage full');}
+  }
+}
+function loadLocal(){
+  try{const h=localStorage.getItem('agro_hist');if(h)_history=JSON.parse(h);}catch(e){_history=[];}
+}
+function doLogout(){
+  if(confirm('למחוק את כל ההיסטוריה?')){localStorage.removeItem('agro_hist');_history=[];showWelcome();toast('✅ נמחק');}
+}
+
+function showWelcome(){
+  const wrap=document.getElementById('chat-wrap');
+  wrap.innerHTML=`<div class="welcome-card">
+    <div class="wc-icon">🌿</div>
+    <h2>שלום, אני אגרובוט</h2>
+    <p>היועץ האגרונומי האישי שלך לקנאביס רפואי.<br>
+    שאל אותי על דישון, תאורה, סביבה, מחלות וכל<br>
+    שאלה גידולית — אני זוכר את כל השיחות שלנו.</p>
+  </div>`;
+}
+
+function renderHistory(){
+  const wrap=document.getElementById('chat-wrap');
+  wrap.innerHTML='';
+  _history.forEach(m=>appendMsg(m.role,m.content,m.imgs,m.time,false));
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+function saveMsg(role,content,imgs=null){
+  _history.push({role,content,imgs,time:new Date().toISOString()});
+  saveLocal();
+}
+
+// ── INIT ──
+loadLocal();
+if(_history.length) renderHistory();
+else showWelcome();
+
+// ── FILE HANDLING ──
+function handleFiles(files){
+  Array.from(files).forEach(f=>{
+    if(f.type.startsWith('image/')){
+      const reader=new FileReader();
+      reader.onload=e=>{
+        const b64=e.target.result.split(',')[1];
+        _pendingImgs.push({base64:b64,type:f.type,name:f.name});
+        showImgPreview();
+      };
+      reader.readAsDataURL(f);
+    } else {
+      // טקסט/CSV
+      const reader=new FileReader();
+      reader.onload=e=>{
+        const txt=e.target.result;
+        document.getElementById('msg-inp').value+=`\n[קובץ: ${f.name}]\n${txt.substring(0,2000)}`;
+      };
+      reader.readAsText(f);
+    }
+  });
+}
+
+function showImgPreview(){
+  const prev=document.getElementById('img-preview');
+  prev.style.display='flex';
+  prev.innerHTML=_pendingImgs.map((img,i)=>`
+    <div class="img-thumb">
+      <img src="data:${img.type};base64,${img.base64}">
+      <button class="img-thumb-del" onclick="removeImg(${i})">✕</button>
+    </div>`).join('');
+}
+function removeImg(i){
+  _pendingImgs.splice(i,1);
+  if(!_pendingImgs.length){document.getElementById('img-preview').style.display='none';}
+  else showImgPreview();
+}
+
+// ── SEND MESSAGE ──
+async function sendMsg(){
+  const inp=document.getElementById('msg-inp');
+  const text=inp.value.trim();
+  if(!text&&!_pendingImgs.length) return;
+
+  inp.value='';
+  inp.style.height='';
+  document.getElementById('send-btn').disabled=true;
+
+  const imgs=[..._pendingImgs];
+  _pendingImgs=[];
+  document.getElementById('img-preview').style.display='none';
+  document.getElementById('img-preview').innerHTML='';
+
+  const time=new Date().toISOString();
+  appendMsg('user',text||'(תמונה)',imgs.map(i=>i.base64),time);
+  saveMsg('user',text||'',imgs.length?imgs:null);
+  _history.push({role:'user',content:text,imgs:imgs.length?imgs:null,time});
+
+  showTyping();
+  try{
+    const reply=await callClaude(text,imgs);
+    hideTyping();
+    const rTime=new Date().toISOString();
+    appendMsg('bot',reply,null,rTime);
+    saveMsg('assistant',reply);
+    // saveMsg already pushes to _history
+  }catch(e){
+    hideTyping();
+    appendMsg('bot','⚠️ שגיאה בחיבור לסוכן: '+e.message,null,new Date().toISOString());
+  }
+  document.getElementById('send-btn').disabled=false;
+}
+
+function sendChip(el){
+  document.getElementById('msg-inp').value=el.textContent.replace(/^[^\s]+\s/,'');
+  document.getElementById('msg-inp').focus();
+}
+
+// ── CLAUDE API ──
+async function callClaude(text,imgs){
+  let gemKey=localStorage.getItem('cf_gemini_key')||localStorage.getItem('agro_gemini_key')||'';
+  if(!gemKey){
+    gemKey=prompt('הכנס Gemini API Key (חינמי מ-aistudio.google.com):');
+    if(!gemKey) throw new Error('נדרש מפתח API');
+    localStorage.setItem('agro_gemini_key',gemKey.trim());
+    gemKey=gemKey.trim();
+  }
+
+  const brain=localStorage.getItem('agro_brain')||'';
+  const style=localStorage.getItem('agro_style')||'ענה קצר ולעניין. משפטים קצרים. אל תחזור על מה שנאמר.';
+
+  // היסטוריה מלאה (טקסט בלבד)
+  const histCtx=_history.slice(-40)
+    .map(m=>`${m.role==='user'?'משתמש':'אגרובוט'}: ${(m.content||'').substring(0,500)}`)
+    .join('\n');
+
+  const SYSTEM=`אתה אגרובוט — יועץ אגרונומי אישי לקנאביס רפואי.
+
+סגנון תשובות:
+${style}
+
+${brain?`=== מאגר הידע שלי ===
+${brain}
+=== סוף מאגר הידע ===
+
+`:''
+}אתה מתמחה ב: דישון (NPK, pH, EC, מינונים), תאורה (PPFD, ספקטרום, מחזורי יום/לילה), סביבה (טמפרטורה, לחות, CO2), מחלות ומזיקים, שלבי גידול (השרשה, צימוח, הפרחה, ייבוש, קיורינג), אריזה ואיכות.
+כשמעלים תמונה — נתח ותן ייעוץ ספציפי.
+ענה תמיד בעברית. אל תגיד "זה תלוי" — תמיד תן עמדה ספציפית עם מספרים.
+
+היסטוריית השיחה:
+${histCtx}`;
+
+  const models=['gemini-2.5-flash','gemini-2.0-flash','gemini-1.5-flash'];
+  for(const model of models){
+    try{
+      const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${gemKey}`;
+      const parts=[];
+      if(imgs?.length) imgs.forEach(img=>parts.push({inlineData:{mimeType:img.type||'image/jpeg',data:img.base64}}));
+      parts.push({text:text||'ייעץ לי'});
+      const res=await fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          systemInstruction:{parts:[{text:SYSTEM}]},
+          contents:[{role:'user',parts}],
+          generationConfig:{maxOutputTokens:3000,temperature:0.4}
+        })
+      });
+      const data=await res.json();
+      if(data.error){if(data.error.code===429||data.error.code===503) continue; throw new Error(data.error.message);}
+      return data.candidates?.[0]?.content?.parts?.[0]?.text||'לא התקבלה תשובה';
+    }catch(e){if(e.message.includes('API Key')) throw e; continue;}
+  }
+  throw new Error('כל המודלים לא זמינים');
+}
+
+// ── UI HELPERS ──
+function appendMsg(role,text,imgs,time,scroll=true){
+  const wrap=document.getElementById('chat-wrap');
+  const t=time?new Date(time).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}):'';
+  const isBot=role==='bot'||role==='assistant';
+
+  if(isBot&&text){
+    // פצל לבועות WhatsApp
+    const bubbles=splitToBubbles(text);
+    bubbles.forEach((bubble,i)=>{
+      const div=document.createElement('div');
+      div.className='msg bot';
+      const isFirst=i===0;
+      const isLast=i===bubbles.length-1;
+      div.innerHTML=`
+        ${isFirst?'<div class="bot-avatar">🌿</div>':'<div class="bot-avatar-spacer"></div>'}
+        <div>
+          <div class="msg-bubble" style="${isFirst&&bubbles.length>1?'border-bottom-right-radius:4px':''}${!isFirst&&!isLast?';border-radius:4px 16px 16px 4px':''}${isLast&&bubbles.length>1?';border-top-right-radius:4px':''}">${formatText(bubble)}</div>
+          ${isLast?`<div class="msg-time">${t}</div>`:''}
+        </div>`;
+      wrap.appendChild(div);
+    });
+    // תמונות בבועה נפרדת
+    if(imgs?.length){
+      const imgDiv=document.createElement('div');
+      imgDiv.className='msg bot';
+      let imgHtml='';
+      imgs.forEach(img=>{
+        const src=typeof img==='string'?`data:image/jpeg;base64,${img}`:img.base64?`data:${img.type||'image/jpeg'};base64,${img.base64}`:'';
+        if(src) imgHtml+=`<img class="msg-img" src="${src}" onclick="zoomImg(this)">`;
+      });
+      imgDiv.innerHTML=`<div class="bot-avatar-spacer"></div><div><div class="msg-bubble">${imgHtml}</div></div>`;
+      wrap.appendChild(imgDiv);
+    }
+  } else {
+    // הודעת משתמש — בועה אחת
+    const div=document.createElement('div');
+    div.className=`msg ${isBot?'bot':'user'}`;
+    let imgHtml='';
+    if(imgs?.length){
+      imgs.forEach(img=>{
+        const src=typeof img==='string'?`data:image/jpeg;base64,${img}`:img.base64?`data:${img.type||'image/jpeg'};base64,${img.base64}`:'';
+        if(src) imgHtml+=`<img class="msg-img" src="${src}" onclick="zoomImg(this)">`;
+      });
+    }
+    div.innerHTML=`
+      ${isBot?'<div class="bot-avatar">🌿</div>':''}
+      <div>
+        <div class="msg-bubble">${formatText(text||'')}${imgHtml}</div>
+        <div class="msg-time">${t}</div>
+      </div>`;
+    wrap.appendChild(div);
+  }
+  if(scroll) wrap.scrollTop=wrap.scrollHeight;
+}
+
+function formatText(t){
+  if(!t) return '';
+  // המר markdown לHTML נקי
+  return t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`(.*?)`/g,'<code>$1</code>')
+    .replace(/^#{1,3}\s+(.+)$/gm,'<div class="msg-heading">$1</div>')
+    .replace(/^[-•]\s+(.+)$/gm,'<div class="msg-li">$1</div>')
+    .replace(/^\d+\.\s+(.+)$/gm,'<div class="msg-li-num">$1</div>')
+    .replace(/\n\n/g,'<div class="msg-gap"></div>')
+    .replace(/\n/g,'<br>');
+}
+
+// פצל תשובה ארוכה לבועות קצרות בסגנון WhatsApp
+function splitToBubbles(text){
+  if(!text) return [''];
+  // פצל לפי כותרות ## או שורות ריקות כפולות
+  const parts=text.split(/\n(?=#{1,3}\s)|(?<=\n)\n(?=\n)/g)
+    .map(p=>p.trim()).filter(p=>p.length>0);
+  // אם אין פיצול טבעי — פצל לפי 300 תווים
+  if(parts.length<=1&&text.length>300){
+    const sentences=text.split(/(?<=\.|\!|\?)\s+/);
+    const chunks=[];let cur='';
+    sentences.forEach(s=>{
+      if((cur+s).length>280&&cur){chunks.push(cur.trim());cur=s;}
+      else cur+=(cur?' ':'')+s;
+    });
+    if(cur) chunks.push(cur.trim());
+    return chunks.filter(c=>c.length>0);
+  }
+  return parts;
+}
+
+function zoomImg(img){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;display:flex;align-items:center;justify-content:center';
+  ov.innerHTML=`<img src="${img.src}" style="max-width:95vw;max-height:90vh;border-radius:10px">`;
+  ov.onclick=()=>ov.remove();
+  document.body.appendChild(ov);
+}
+
+let _typingEl=null;
+function showTyping(){
+  const wrap=document.getElementById('chat-wrap');
+  _typingEl=document.createElement('div');
+  _typingEl.className='msg bot';
+  _typingEl.innerHTML=`<div class="bot-avatar">🌿</div>
+    <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  wrap.appendChild(_typingEl);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+function hideTyping(){if(_typingEl){_typingEl.remove();_typingEl=null;}}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+function toast(msg,dur=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+function clearChat(){
+  if(!confirm('התחל שיחה חדשה? ההיסטוריה נשמרת בזיכרון.')) return;
+  _history=[];
+  showWelcome();
+}
+
+// ── MEMORY PANEL ──
+// ═══════════════════════════════════════
+//  מחשבון דישון
+// ═══════════════════════════════════════
+const PRODUCTS={
+  // N,P,K,Ca,Mg,S,Si = % במוצר היבש
+  // Fe,B(Micro),Zn,Cu,Mn,Mo = % במוצר היבש
+  // B7000: isMgL=true, B=7000 מג/ל (נוזל)
+  haifa_cal:   {name:'Haifa Cal™',    N:15.5,P:0,   K:0,   Ca:19,  Mg:0,   S:0,   Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  micro_combi: {name:'Micro Combi',   N:0,   P:0,   K:0,   Ca:0,   Mg:0,   S:0,   Fe:7.4, B:1,    Zn:1.1, Cu:0.8, Mn:3.7, Mo:0.5,Si:0,  isMgL:false},
+  b7000:       {name:'B-7000 ICL',    N:0,   P:0,   K:0,   Ca:0,   Mg:0,   S:0,   Fe:0,   B:7000, Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:true},
+  bittermag_b: {name:'BitterMag (B)', N:0,   P:0,   K:0,   Ca:0,   Mg:9.8, S:13,  Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  mkp:         {name:'Haifa MKP™',    N:0,   P:22.7,K:28.7,Ca:0,   Mg:0,   S:0,   Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  multi_k:     {name:'Multi-K™',      N:13,  P:0,   K:38,  Ca:0,   Mg:0,   S:0,   Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  sop:         {name:'Haifa SOP™',    N:0,   P:0,   K:42.3,Ca:0,   Mg:0,   S:18,  Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  map:         {name:'Haifa MAP™',    N:12,  P:22.7,K:0,   Ca:0,   Mg:0,   S:1.8, Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  cal_abs:     {name:'Cal Absolute',  N:0,   P:0,   K:0,   Ca:30.2,Mg:0,   S:0,   Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  bittermag_d: {name:'BitterMag (D)', N:0,   P:0,   K:0,   Ca:0,   Mg:9.8, S:13,  Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:0,  isMgL:false},
+  wall_up_si:  {name:'Wall Up Si',    N:0,   P:0,   K:0,   Ca:0,   Mg:0,   S:0,   Fe:0,   B:0,    Zn:0,   Cu:0,   Mn:0,   Mo:0,  Si:20, isMgL:false},
+};
+
+// פרוטוקול לפי שלבים (מינונים ג'/ליטר סטוק 1:500)
+const PROTOCOL=[
+  {stage:'VEG',      label:'🌿 צימוח',           A:4,   B:0,   C:0,   D:0,   E:0,   ec:1.6, target:{N:160,P:40, K:140,Ca:180,Mg:75}},
+  {stage:'STRETCH',  label:'🌱 מעבר (Stretch)',   A:5,   B:1,   C:0,   D:1.5, E:0,   ec:1.8, target:{N:180,P:50, K:130,Ca:200,Mg:80}},
+  {stage:'BULK1',    label:'🌸 פריחה מוקדמת',    A:4.5, B:6,   C:1,   D:0,   E:0,   ec:2.2, target:{N:120,P:60, K:250,Ca:180,Mg:80}},
+  {stage:'BULK2',    label:'💪 שיא (Bulking)',    A:1.5, B:6,   C:4.5, D:1.5, E:0,   ec:2.6, target:{N:100,P:70, K:280,Ca:180,Mg:85}},
+  {stage:'RIPEN',    label:'🍁 הבשלה',            A:1.5, B:5,   C:3.5, D:0,   E:0,   ec:2.2, target:{N:80, P:50, K:260,Ca:160,Mg:75}},
+  {stage:'FADE',     label:'🍂 דעיכה (Fade)',     A:0,   B:5,   C:5,   D:0,   E:0,   ec:1.8, target:{N:40, P:40, K:220,Ca:150,Mg:70}},
+  {stage:'FLUSH',    label:'💧 שטיפה (Flush)',    A:0,   B:0,   C:0,   D:0,   E:0,   ec:0,   target:{N:0,  P:0,  K:0,  Ca:0,  Mg:0}},
+];
+
+// ── הגדרות מחשבון (נשמרות ב-localStorage) ──
+function getCalcSettings(){
+  const def={
+    injRatio:500,      // יחס הזרקה 1:X
+    stockVol:200,      // נפח מיכל סטוק (ל')
+    irrigVol:1000,     // נפח מיכל השקיה (ל')
+    ecFactor:640,      // מקדם EC (ppm ל-1 EC)
+  };
+  try{return{...def,...JSON.parse(localStorage.getItem('agro_calc_settings')||'{}')};} 
+  catch(e){return def;}
+}
+function saveCalcSettings(s){localStorage.setItem('agro_calc_settings',JSON.stringify(s));}
+
+function openCalcSettings(){
+  const s=getCalcSettings();
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:700;display:flex;align-items:flex-end;backdrop-filter:blur(4px)';
+  ov.innerHTML=`<div style="background:var(--surf);border-radius:20px 20px 0 0;width:100%;padding:20px" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:900">⚙️ הגדרות מחשבון</div>
+      <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--txm);font-size:20px;cursor:pointer">✕</button>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:6px">יחס הזרקה 1:X</div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        ${[100,200,500,1000].map(r=>`<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.style.background='var(--surf2)');this.style.background='var(--accent2)';document.getElementById('inj-ratio').value=${r}" 
+          style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--brd);background:${s.injRatio===r?'var(--accent2)':'var(--surf2)'};color:${s.injRatio===r?'#fff':'var(--txd)'};font-size:12px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif">1:${r}</button>`).join('')}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;color:var(--txm)">מותאם 1:</span>
+        <input type="number" id="inj-ratio" value="${s.injRatio}" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--brd);background:var(--surf2);color:var(--tx);font-size:13px;font-weight:700">
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:6px">נפח סטוק (ל')</div>
+        <input type="number" id="stock-vol" value="${s.stockVol}" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--brd);background:var(--surf2);color:var(--tx);font-size:14px;font-weight:700;text-align:center">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:6px">נפח השקיה (ל')</div>
+        <input type="number" id="irrig-vol" value="${s.irrigVol}" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--brd);background:var(--surf2);color:var(--tx);font-size:14px;font-weight:700;text-align:center">
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:6px">מקדם EC (ppm = 1 EC)</div>
+      <div style="display:flex;gap:8px">
+        ${[{n:'Bluelab',v:640},{n:'HM Digital',v:700},{n:'Hanna',v:500}].map(m=>`
+          <button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.style.background='var(--surf2)');this.style.background='var(--accent2)';document.getElementById('ec-factor').value=${m.v}"
+            style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--brd);background:${s.ecFactor===m.v?'var(--accent2)':'var(--surf2)'};color:${s.ecFactor===m.v?'#fff':'var(--txd)'};font-size:11px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif">${m.n}<br><span style="font-size:9px;opacity:.7">${m.v}</span></button>`).join('')}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <span style="font-size:11px;color:var(--txm)">מותאם:</span>
+        <input type="number" id="ec-factor" value="${s.ecFactor}" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--brd);background:var(--surf2);color:var(--tx);font-size:13px;font-weight:700">
+      </div>
+    </div>
+
+    <button onclick="
+      const s={
+        injRatio:parseInt(document.getElementById('inj-ratio').value)||500,
+        stockVol:parseInt(document.getElementById('stock-vol').value)||200,
+        irrigVol:parseInt(document.getElementById('irrig-vol').value)||1000,
+        ecFactor:parseInt(document.getElementById('ec-factor').value)||640,
+      };
+      saveCalcSettings(s);
+      this.closest('[style*=fixed]').remove();
+      document.getElementById('calc-overlay')?.remove();
+      openCalc();
+    " style="width:100%;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#fff;padding:14px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif">✅ שמור</button>
+  </div>`;
+  document.body.appendChild(ov);
+  ov.onclick=(e)=>{if(e.target===ov)ov.remove();};
+}
+const TANK_CONFIG={
+  A:{ratio:500,products:['haifa_cal','micro_combi','b7000'], grams:{haifa_cal:100,micro_combi:2.5,b7000:5}},
+  B:{ratio:500,products:['bittermag_b','mkp','multi_k','sop','map'], grams:{bittermag_b:50,mkp:35,multi_k:40,sop:25,map:5}},
+  C:{ratio:500,products:['cal_abs','micro_combi','b7000'], grams:{cal_abs:50,micro_combi:2.5,b7000:5}},
+  D:{ratio:500,products:['bittermag_d'], grams:{bittermag_d:100}},
+  E:{ratio:500,products:['wall_up_si'], grams:{wall_up_si:3}},
+};
+
+// חישוב PPM מהמינונים
+function calcPPM(doses){
+  const s=getCalcSettings();
+  const ratio=s.injRatio||500;
+  const ecFactor=s.ecFactor||640;
+  const ppm={N:0,P:0,K:0,Ca:0,Mg:0,S:0,Fe:0,B:0,Zn:0,Cu:0,Mn:0,Mo:0,Si:0};
+  Object.entries(doses).forEach(([tank,dose])=>{
+    if(!dose||!TANK_CONFIG[tank]) return;
+    const cfg=TANK_CONFIG[tank];
+    cfg.products.forEach(pid=>{
+      const gPerLStock=cfg.grams[pid]||0;
+      const prod=PRODUCTS[pid];
+      if(!prod) return;
+      const gInFinalL=(gPerLStock*dose)/1000;
+      if(prod.isMgL){
+        ppm.B+=gInFinalL*7;
+      } else {
+        Object.keys(ppm).forEach(el=>{
+          if(!prod[el]) return;
+          ppm[el]+=(prod[el]/100)*gInFinalL*1000;
+        });
+      }
+    });
+  });
+  const ions=ppm.N+ppm.P+ppm.K+ppm.Ca+ppm.Mg+ppm.S;
+  ppm.EC=(ions/ecFactor).toFixed(2);
+  return ppm;
+}
+
+// ערכי מינימום/מקסימום מיקרו (מהקובץ שלך)
+const MICRO_RANGES={
+  Fe:{min:0.8, max:3.5, warn:'עודף חוסם זרחן ומנגן'},
+  Mn:{min:0.25,max:1,   warn:'עודף רעיל מאוד — נועל ברזל'},
+  B: {min:0.15,max:0.5, warn:'קו דק! מעל 0.5 שורף קצות עלים'},
+  Zn:{min:0.05,max:0.3, warn:'מפריע לקליטת ברזל ונחושת'},
+  Cu:{min:0.01,max:0.1, warn:'מסוכן! שורף שערות שורש'},
+  Mo:{min:0.01,max:0.05,warn:'עודף: עלים כתום-צהוב'},
+};
+
+function openCalc(){
+  const saved=JSON.parse(localStorage.getItem('agro_calc')||'{}');
+  const doses=saved.doses||{A:4,B:0,C:0,D:0,E:0};
+  const ppm=calcPPM(doses);
+  const sel=saved.stage||'VEG';
+  const proto=PROTOCOL.find(p=>p.stage===sel)||PROTOCOL[0];
+  const s=getCalcSettings();
+
+  const ov=document.createElement('div');
+  ov.id='calc-overlay';
+  ov.style.cssText='position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;overflow:hidden';
+
+  function stageBtn(p){
+    const active=p.stage===sel;
+    return`<button onclick="calcSetStage('${p.stage}')" style="flex-shrink:0;padding:6px 12px;border-radius:20px;border:1px solid ${active?'var(--accent)':'var(--brd)'};background:${active?'var(--accent2)':'var(--surf2)'};color:${active?'#fff':'var(--txd)'};font-size:11px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif;white-space:nowrap">${p.label}</button>`;
+  }
+
+  function nutrientBar(label,val,target,unit='ppm'){
+    const pct=target>0?Math.min(100,(val/target)*100):0;
+    const color=pct<70?'var(--red)':pct<90?'var(--gold)':pct>120?'var(--red)':'var(--sage)';
+    return`<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+        <span style="font-weight:700">${label}</span>
+        <span style="color:${color};font-weight:700">${Math.round(val)} <span style="color:var(--txm);font-weight:400">/ ${target} ${unit}</span></span>
+      </div>
+      <div style="height:5px;background:var(--surf2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width .3s"></div>
+      </div>
+    </div>`;
+  }
+
+  ov.innerHTML=`
+    <div style="background:var(--surf);border-bottom:1px solid var(--brd);padding:12px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <button onclick="document.getElementById('calc-overlay').remove()" style="background:none;border:none;color:var(--txm);font-size:22px;cursor:pointer">←</button>
+      <div style="font-size:16px;font-weight:900">🧪 מחשבון דישון</div>
+      <div style="flex:1"></div>
+      <button onclick="openCalcSettings()" style="background:var(--surf2);border:1px solid var(--brd);color:var(--txm);width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:16px">⚙️</button>
+      <button onclick="calcAskAI()" style="background:var(--accent2);border:none;color:#fff;padding:6px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif">🌿 AI</button>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:14px">
+
+      <!-- הגדרות נוכחיות -->
+      <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:8px 12px;margin-bottom:14px;display:flex;gap:12px;font-size:10px;color:var(--txm)">
+        <span>יחס: <b style="color:var(--txd)">1:${s.injRatio}</b></span>
+        <span>סטוק: <b style="color:var(--txd)">${s.stockVol}ל'</b></span>
+        <span>השקיה: <b style="color:var(--txd)">${s.irrigVol}ל'</b></span>
+        <span>EC×<b style="color:var(--txd)">${s.ecFactor}</b></span>
+      </div>
+
+      <!-- שלב גידול -->
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:8px">שלב גידול</div>
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px">
+        ${PROTOCOL.map(p=>stageBtn(p)).join('')}
+      </div>
+
+      <!-- מינונים מיכלים -->
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:8px">מינונים (ג'/ל סטוק 1:${s.injRatio})</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        ${['A','B','C','D','E'].map(t=>`
+          <div style="background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:10px">
+            <div style="font-size:10px;color:var(--txm);margin-bottom:4px">מיכל ${t}</div>
+            <div style="font-size:9px;color:var(--txm);margin-bottom:6px;line-height:1.4">${TANK_CONFIG[t].products.map(p=>PRODUCTS[p].name).join(', ')}</div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button onclick="calcAdj('${t}',-0.5)" style="background:var(--surf2);border:1px solid var(--brd);color:var(--tx);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700">-</button>
+              <div id="dose-${t}" style="flex:1;text-align:center;font-size:18px;font-weight:900;color:var(--accent-light)">${doses[t]||0}</div>
+              <button onclick="calcAdj('${t}',0.5)" style="background:var(--surf2);border:1px solid var(--brd);color:var(--tx);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700">+</button>
+            </div>
+          </div>`).join('')}
+        <div style="background:var(--surf);border:1px solid var(--accent);border-radius:12px;padding:10px;display:flex;flex-direction:column;justify-content:center;align-items:center">
+          <div style="font-size:10px;color:var(--txm)">EC צפוי</div>
+          <div id="calc-ec" style="font-size:22px;font-weight:900;color:var(--accent-light)">${ppm.EC}</div>
+          <div style="font-size:9px;color:var(--txm)">mS/cm</div>
+        </div>
+      </div>
+
+      <!-- מאקרו -->
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:8px">PPM מאקרו</div>
+      <div style="background:var(--surf);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:14px" id="macro-bars">
+        ${nutrientBar('N חנקן',ppm.N,proto.target.N)}
+        ${nutrientBar('P זרחן',ppm.P,proto.target.P)}
+        ${nutrientBar('K אשלגן',ppm.K,proto.target.K)}
+        ${nutrientBar('Ca סידן',ppm.Ca,proto.target.Ca)}
+        ${nutrientBar('Mg מגנזיום',ppm.Mg,proto.target.Mg)}
+      </div>
+
+      <!-- מיקרו -->
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:8px">מיקרו (ppm)</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px">
+        ${Object.entries(MICRO_RANGES).map(([el,range])=>{
+          const val=ppm[el]||0;
+          const status=val<range.min?'low':val>range.max?'high':'ok';
+          const color=status==='low'?'var(--gold)':status==='high'?'var(--red)':'var(--sage)';
+          const icon=status==='low'?'⬇️':status==='high'?'⚠️':'✅';
+          return`<div style="background:var(--surf);border:1px solid ${status==='high'?'var(--red)':'var(--brd)'};border-radius:10px;padding:8px;text-align:center" title="${range.warn}">
+            <div style="font-size:10px;color:var(--txm)">${el}</div>
+            <div style="font-size:16px;font-weight:900;color:${color}">${val.toFixed(2)}</div>
+            <div style="font-size:8px;color:var(--txm)">${range.min}-${range.max} ${icon}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- יחסים -->
+      <div style="font-size:11px;font-weight:700;color:var(--txm);margin-bottom:8px">יחסים</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:80px">
+        ${[
+          {label:'K:Ca',val:(ppm.K/Math.max(ppm.Ca,1)).toFixed(2),ideal:'2.2',range:[1.8,2.5]},
+          {label:'N:K', val:(ppm.N/Math.max(ppm.K,1)).toFixed(2), ideal:'0.25',range:[0.2,0.4]},
+          {label:'Ca:Mg',val:(ppm.Ca/Math.max(ppm.Mg,1)).toFixed(2),ideal:'2.2',range:[1.8,2.5]},
+        ].map(r=>{
+          const v=parseFloat(r.val);
+          const ok=v>=r.range[0]&&v<=r.range[1];
+          return`<div style="background:var(--surf);border:1px solid ${ok?'var(--brd)':'var(--gold)'};border-radius:10px;padding:8px;text-align:center">
+            <div style="font-size:10px;color:var(--txm)">${r.label}</div>
+            <div style="font-size:16px;font-weight:900;color:${ok?'var(--sage)':'var(--gold)'}">${r.val}</div>
+            <div style="font-size:8px;color:var(--txm)">יעד: ${r.ideal}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+  document.body.appendChild(ov);
+  _calcDoses=doses;
+  _calcStage=sel;
+}
+
+let _calcDoses={A:4,B:0,C:0,D:0,E:0};
+let _calcStage='VEG';
+
+function calcAdj(tank,delta){
+  _calcDoses[tank]=Math.max(0,Math.round((_calcDoses[tank]||0)*10+delta*10)/10);
+  document.getElementById('dose-'+tank).textContent=_calcDoses[tank];
+  calcUpdate();
+}
+
+function calcSetStage(stage){
+  _calcStage=stage;
+  const proto=PROTOCOL.find(p=>p.stage===stage);
+  if(proto){
+    _calcDoses={A:proto.A,B:proto.B,C:proto.C,D:proto.D,E:proto.E};
+  }
+  localStorage.setItem('agro_calc',JSON.stringify({doses:_calcDoses,stage:_calcStage}));
+  document.getElementById('calc-overlay').remove();
+  openCalc();
+}
+
+function calcUpdate(){
+  const ppm=calcPPM(_calcDoses);
+  const proto=PROTOCOL.find(p=>p.stage===_calcStage)||PROTOCOL[0];
+  document.getElementById('calc-ec').textContent=ppm.EC;
+  // עדכן bars
+  const bars=['N חנקן','P זרחן','K אשלגן','Ca סידן','Mg מגנזיום'].map((label,i)=>{
+    const keys=['N','P','K','Ca','Mg'];
+    return`<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+        <span style="font-weight:700">${label}</span>
+        <span style="font-weight:700;color:var(--tx)">${Math.round(ppm[keys[i]])} <span style="color:var(--txm);font-weight:400">/ ${proto.target[keys[i]]} ppm</span></span>
+      </div>
+      <div style="height:5px;background:var(--surf2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${Math.min(100,(ppm[keys[i]]/Math.max(proto.target[keys[i]],1))*100)}%;background:var(--sage);border-radius:3px;transition:width .3s"></div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('macro-bars').innerHTML=bars;
+  localStorage.setItem('agro_calc',JSON.stringify({doses:_calcDoses,stage:_calcStage}));
+}
+
+function calcAskAI(){
+  const ppm=calcPPM(_calcDoses);
+  const proto=PROTOCOL.find(p=>p.stage===_calcStage)||PROTOCOL[0];
+  const q=`אני בשלב ${proto.label}. המינונים שלי: A=${_calcDoses.A} B=${_calcDoses.B} C=${_calcDoses.C} D=${_calcDoses.D} E=${_calcDoses.E} ג'/ל סטוק.
+PPM: N=${Math.round(ppm.N)} P=${Math.round(ppm.P)} K=${Math.round(ppm.K)} Ca=${Math.round(ppm.Ca)} Mg=${Math.round(ppm.Mg)} EC=${ppm.EC}
+יעדים לשלב: N=${proto.target.N} P=${proto.target.P} K=${proto.target.K} Ca=${proto.target.Ca} Mg=${proto.target.Mg}
+האם המינונים נכונים? מה לשנות?`;
+  document.getElementById('calc-overlay').remove();
+  document.getElementById('msg-inp').value=q;
+  sendMsg();
+}
+
+function loadBrainFile(input){
+  const file=input.files[0];
+  if(!file) return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='csv'||ext==='txt'){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const txt=e.target.result;
+      const area=document.getElementById('brain-text');
+      if(area){
+        area.value+=(area.value?'\n\n':'')+`=== ${file.name} ===\n${txt.substring(0,8000)}`;
+        document.getElementById('brain-chars').textContent=area.value.length+' תווים';
+      }
+      toast(`✅ ${file.name} נוסף למאגר`);
+    };
+    reader.readAsText(file);
+  } else if(ext==='pdf'){
+    // PDF — שלח ל-Gemini לניתוח
+    const reader=new FileReader();
+    reader.onload=async e=>{
+      const b64=e.target.result.split(',')[1];
+      toast('⏳ מנתח PDF...');
+      try{
+        const gemKey=localStorage.getItem('cf_gemini_key')||localStorage.getItem('agro_gemini_key')||'';
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${gemKey}`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({contents:[{role:'user',parts:[
+            {inlineData:{mimeType:'application/pdf',data:b64}},
+            {text:'חלץ את כל המידע הרלוונטי מהמסמך הזה. שמור על מספרים, טבלאות ונתונים מדויקים. ענה בעברית.'}
+          ]}],generationConfig:{maxOutputTokens:4000}})
+        });
+        const data=await res.json();
+        const extracted=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+        const area=document.getElementById('brain-text');
+        if(area&&extracted){
+          area.value+=(area.value?'\n\n':'')+`=== ${file.name} ===\n${extracted}`;
+          document.getElementById('brain-chars').textContent=area.value.length+' תווים';
+          toast('✅ PDF נוסף למאגר');
+        }
+      }catch(e){toast('שגיאה בניתוח PDF');}
+    };
+    reader.readAsDataURL(file);
+  } else {
+    toast('סוג קובץ לא נתמך — השתמש ב-CSV, TXT או PDF');
+  }
+  input.value='';
+}
+
+function openBrain(){
+  const brain=localStorage.getItem('agro_brain')||'';
+  const style=localStorage.getItem('agro_style')||'ענה קצר ולעניין. משפטים קצרים. אל תחזור על מה שנאמר.';
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:flex-end;backdrop-filter:blur(4px)';
+  ov.innerHTML=`<div style="background:var(--surf);border-radius:20px 20px 0 0;width:100%;max-height:88vh;display:flex;flex-direction:column">
+    <div style="padding:16px;border-bottom:1px solid var(--brd);flex-shrink:0">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:15px;font-weight:900">📚 מאגר ידע</div>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--txm);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      <div style="font-size:11px;color:var(--txm);margin-top:4px">הסוכן קורא את זה בכל שיחה — הדבק פרוטוקולים, טבלאות, מחקרים, נסיון מהשטח</div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px">
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent-light);margin-bottom:6px">🎯 סגנון תשובות</div>
+        <textarea id="brain-style" style="width:100%;background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:10px;color:var(--tx);font-size:12px;font-family:'Heebo',sans-serif;resize:none;height:70px;outline:none;direction:rtl">${style}</textarea>
+      </div>
+
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:11px;font-weight:700;color:var(--accent-light)">🧬 מאגר ידע</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div style="font-size:10px;color:var(--txm)" id="brain-chars">${brain.length} תווים</div>
+            <button onclick="document.getElementById('brain-file-inp').click()" style="background:var(--surf2);border:1px solid var(--brd);color:var(--txm);padding:3px 8px;border-radius:6px;font-size:10px;cursor:pointer">📎 העלה קובץ</button>
+            <input type="file" id="brain-file-inp" accept=".pdf,.csv,.txt,.xlsx" style="display:none" onchange="loadBrainFile(this)">
+          </div>
+        </div>
+        <textarea id="brain-text" placeholder="הדבק כאן:
+• פרוטוקולי דישון שלך
+• נתוני זנים (גנטיקה, זמן פריחה, תשואה)
+• תוצאות מהשטח (מה עבד, מה לא)
+• טבלאות CSV מ-Google Sheets
+• קטעים ממחקרים
+• כל ידע שרוצה שיזכור תמיד"
+style="width:100%;background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:12px;color:var(--tx);font-size:12px;font-family:'Heebo',sans-serif;resize:none;height:260px;outline:none;direction:rtl;line-height:1.6"
+oninput="document.getElementById('brain-chars').textContent=this.value.length+' תווים'">${brain}</textarea>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button onclick="saveBrain()" style="flex:1;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;color:#fff;padding:13px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Heebo',sans-serif">✅ שמור</button>
+        <button onclick="document.getElementById('brain-text').value='';document.getElementById('brain-chars').textContent='0 תווים'" style="background:var(--surf2);border:1px solid var(--brd);color:var(--txm);padding:13px 16px;border-radius:12px;font-size:14px;cursor:pointer">🗑️</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  ov.onclick=(e)=>{if(e.target===ov)ov.remove();};
+}
+
+function saveBrain(){
+  const brain=document.getElementById('brain-text').value;
+  const style=document.getElementById('brain-style').value;
+  localStorage.setItem('agro_brain',brain);
+  localStorage.setItem('agro_style',style);
+  document.querySelector('[style*=fixed]')?.remove();
+  toast(`✅ מאגר ידע נשמר — ${brain.length} תווים`);
+}
+
+function openMem(){
+  document.getElementById('mem-panel').classList.add('open');
+  const list=document.getElementById('mem-list');
+  const userMsgs=_history.filter(m=>m.role==='user').reverse();
+  if(!userMsgs.length){
+    list.innerHTML='<div style="color:var(--txm);font-size:12px;text-align:center;padding:20px">אין שיחות שמורות עדיין</div>';
+    return;
+  }
+  // קבץ לפי תאריך
+  const byDate={};
+  userMsgs.forEach(m=>{
+    const d=m.time?new Date(m.time).toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}):'ללא תאריך';
+    if(!byDate[d]) byDate[d]=[];
+    byDate[d].push(m);
+  });
+  list.innerHTML=`<div style="font-size:11px;color:var(--txm);margin-bottom:10px">${userMsgs.length} שאלות שמורות</div>`+
+    Object.entries(byDate).map(([date,msgs])=>`
+      <div style="font-size:10px;font-weight:700;color:var(--accent-light);margin:10px 0 5px">${date}</div>
+      ${msgs.map(m=>`<div class="mem-item">
+        <div class="mem-item-date">${m.time?new Date(m.time).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}):''}</div>
+        ${(m.content||'').substring(0,100)}${(m.content||'').length>100?'...':''}
+      </div>`).join('')}
+    `).join('');
+}
+function closeMem(){document.getElementById('mem-panel').classList.remove('open');}
+function loadMemMsg(){closeMem();}
+
+// done
+</script>
+</body>
+</html>
